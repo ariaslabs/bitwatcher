@@ -1,14 +1,6 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="12" lg="8">
-        <v-card>
-          <v-card-title>{{ coin.name }} Chart</v-card-title>
-          <v-card-text>
-            <LineChart :data="tickerData" />
-          </v-card-text>
-        </v-card>
-      </v-col>
       <v-col cols="12" lg="4">
         <v-card>
           <v-card-title class="mb-3 text-justify">
@@ -72,7 +64,6 @@
 
 <script>
 import axios from "axios";
-import LineChart from "../components/LineChart.vue";
 import { numberWithCommas, addDecimal } from "../functions/numberTools";
 
 export default {
@@ -84,7 +75,6 @@ export default {
     };
   },
   components: {
-    LineChart,
   },
   async created() {
     const data = await axios

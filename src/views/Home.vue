@@ -6,7 +6,7 @@
       :coins="listedCoins" 
       :listItemActions="coinItemAction" 
       :loader="loader" 
-      tableTitle="Top Crypto by Marketcap"
+      tableTitle="Top 100 Coins by Marketcap"
       />
     </v-card>
   </v-container>
@@ -59,7 +59,7 @@ export default {
     }
   },
   async created() {
-    let data = await axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=500&page=1')
+    let data = await axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1')
       .then( res => res.data)
 
     data.sort((a, b) => (a.market_cap_rank > b.market_cap_rank) ? 1 : -1)

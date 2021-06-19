@@ -1,19 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar
-      app
-      
-    >
-    <v-toolbar-title class="hover" @click="$router.push('/')">BitWatcher</v-toolbar-title>
-    <v-spacer></v-spacer>
-    <div v-if="loggedIn">
-      <v-btn icon>
-        <v-avatar color="primary">
-           <span class="white--text text-h6">CA</span>
-        </v-avatar>
-      </v-btn>
-    </div>
-    </v-app-bar>
+    <Navbar />
     <v-main>
       <router-view/>
     </v-main>
@@ -21,6 +8,7 @@
 </template>
 
 <script>
+import Navbar from './components/Navbar.vue'
 
 export default {
   name: 'App',
@@ -28,6 +16,9 @@ export default {
   data: () => ({
     loggedIn: true
   }),
+  components: {
+    Navbar
+  }
 };
 </script>
 
