@@ -67,6 +67,7 @@ export default {
       coin.current_price = "$" + numberWithCommas(addDecimal(coin.current_price))
       coin.market_cap = "$" + numberWithCommas(coin.market_cap)
       coin.low_24h = "$" + numberWithCommas(addDecimal(coin.low_24h))
+      coin.price_change_percentage_24h = (addDecimal(coin.price_change_percentage_24h)) + "%"
       return coin
     })
 

@@ -13,7 +13,7 @@
         contain
         @click="$router.push('/')"
       ></v-img>
-      <v-toolbar-title class="hover" @click="$router.push('/')">BitWatcher</v-toolbar-title>
+      <v-toolbar-title class="hover" @click="$router.push('/')">BITWATCHER</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
     </v-app-bar>
