@@ -4,6 +4,8 @@ import Home from '../views/Home.vue'
 import Coin from '../views/Coin.vue'
 import Login from '../views/Login.vue'
 import SignUp from '../views/SignUp.vue'
+import Exchanges from '../views/Exchanges.vue'
+import Watchlist from '../views/Watchlist.vue'
 
 Vue.use(VueRouter)
 
@@ -37,6 +39,16 @@ const routes = [
     component: SignUp
   },
   {
+    path: '/exchanges',
+    name: 'Exchanges',
+    component: Exchanges
+  },
+  {
+    path: '/watchlist',
+    name: 'Watchlist',
+    component: Watchlist
+  },
+  {
     path: "*",
     name: 'Error'
   }
@@ -47,5 +59,6 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
+
 
 export default router

@@ -38,18 +38,23 @@
         nav
         dense
       >
-        <v-list-item-group
-          v-model="group"
-          active-class="deep-purple--text text--accent-4"
-        >
-          <v-list-item>
+        <v-list-item-group>
+          <v-list-item
+          v-for="link of links"
+          :key="link.name"
+          :to="link.url"
+          link
+          >
             <v-list-item-icon>
-              <v-icon>mdi-home</v-icon>
+              <v-icon>mdi-{{link.icon}}</v-icon>
             </v-list-item-icon>
-            <v-list-item-title>Home</v-list-item-title>
+            <v-list-item-title>{{link.name}}</v-list-item-title>
           </v-list-item>
-
-          <v-list-item>
+          <v-list-item 
+          v-if="user.loggedIn"
+          link
+          to="/account"
+          >
             <v-list-item-icon>
               <v-icon>mdi-account</v-icon>
             </v-list-item-icon>
@@ -57,15 +62,74 @@
           </v-list-item>
         </v-list-item-group>
       </v-list>
+      <template v-slot:append>
+        <div class="pa-2">
+          <v-btn block v-if="user.loggedIn" depressed
+          @click="logout"
+          >
+            Logout
+          </v-btn>
+          <div v-else>
+            <v-btn block class="mb-2" depressed @click="$router.push('/login')">
+              <v-icon left>
+                mdi-login
+              </v-icon>
+              Login
+            </v-btn>
+            <v-btn block depressed @click="$router.push('/signup')">
+              <v-icon left>
+                mdi-clipboard-edit
+              </v-icon>
+              Sign Up
+            </v-btn>
+          </div>
+        </div>
+      </template>
     </v-navigation-drawer>
   </div>
 </template>
 
 <script>
+import firebase from 'firebase'
+
 export default {
   data: () => {
     return {
-      drawer: false
+      drawer: false,
+      signedIn: false,
+      links: [
+        {
+          name: 'Crypto',
+          url: '/',
+          icon: 'circle-multiple'
+        },
+        {
+          name: 'Exchanges',
+          url: '/exchanges',
+          icon: 'transfer'
+        },
+        {
+          name: 'Portfolio',
+          url: '/portfolio',
+          icon: 'wallet'
+        },
+        {
+          name: 'Watchlist',
+          url: '/watchlist',
+          icon: 'star'
+        },
+      ]
+    }
+  },
+  methods: {
+    logout() {
+      firebase.auth().signOut();
+      this.$router.go('/')
+    }
+  },
+  computed: {
+    user() {
+      return this.$store.state.user
     }
   }
 }

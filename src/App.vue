@@ -33,4 +33,8 @@ export default {
   tr {
     cursor: pointer;
   }
+
+  .small-container {
+    max-width: 1000px;
+  }
 </style>

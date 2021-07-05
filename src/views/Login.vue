@@ -8,37 +8,48 @@
       <v-card-text>
         <v-text-field
         label="Email"
+        v-model="email"
         ></v-text-field>
         <v-text-field
         label="Password"
         type="password"
+        v-model="password"
         ></v-text-field>
       </v-card-text>
       <v-card-actions>
         <v-btn
+        @click="login"
         color="primary"
         >Submit</v-btn>
-        <v-btn>Signup</v-btn>
+        <v-btn @click="$router.push('/signup')">Signup</v-btn>
       </v-card-actions>
     </v-card>
   </v-container>
 </template>
 
 <script>
-import firebase from '../services/firebase'
+import firebase from 'firebase'
 
 export default {
   data: () => {
     return {
       email: '',
-      password: ''
+      password: '',
+      loader: false,
+      disable: false,
+      alert: {
+        message: '',
+        type: '',
+        show: false
+      },
     }
   },
   methods: {
     login() {
-      firebase.auth().signInWithCredential()
+      firebase.auth().signInWithEmailAndPassword(this.email, this.password)
       .then(() => {
 
+        this.$router.push('/');
       })
       .catch(err => {
         console.error(err);

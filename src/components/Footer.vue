@@ -3,45 +3,56 @@
     <v-card 
     flat
     tile
-    class="flex py-5"
+    class="flex py-3"
     >
     <v-divider></v-divider>
       <v-container>
         <v-row>
-          <v-col>
-            <v-card-text >
-              <div class="d-flex align-center">
-                <v-img
-                class="mr-2 hover float-left"
-                src="../assets/images/bitwatcher.png"
-                max-height="35"
-                max-width="35"
-                contain
-                @click="$router.push('/')"
-                ></v-img>
-                <h4 class="">BITWATCHER</h4>
-              </div>
-            </v-card-text>
+          <v-col cols="12" class="text-center">
+            <v-btn 
+            v-for="link in links" 
+            :key="link.name"  
+            @click="$router.push(link.url)"
+            text
+            rounded
+            class="my-1"
+            >
+              {{link.name}}
+            </v-btn>
           </v-col>
-          <v-col>
-            <v-card-text>
-
-            </v-card-text>
+          <v-col class="text-center py-4">
+            {{ new Date().getFullYear() }} — <strong>ARIASLABS</strong>
           </v-col>
         </v-row>
       </v-container>
-      
-      
-      <v-card-text>
-
-      </v-card-text>
     </v-card>
   </v-footer>
 </template>
 
 <script>
 export default {
-  links: []
+  data: () => {
+    return {
+      links: [
+        {
+          name: 'Crypto',
+          url: '/'
+        },
+        {
+          name: 'Exchanges',
+          url: '/exchanges'
+        },
+        {
+          name: 'Portfolio',
+          url: '/'
+        },
+        {
+          name: 'Watchlist',
+          url: '/'
+        },
+      ]
+    }
+  }
 }
 </script>
 

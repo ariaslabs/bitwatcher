@@ -10,7 +10,7 @@
                   <v-img max-height="50" max-width="50" class="float-left" :src="coin.image.large"></v-img>
                   <h2 class="ml-4 d-none d-sm-block">{{ coin.name }}</h2>
                 </div>
-                <div class="d-flex justify-end mt-n14 mt-sm-0 justify-sm-start">
+                <div class="d-flex justify-end mt-n14 mt-sm-0 justify-sm-start" v-if="coin.marketCapRank !== null">
                   <v-chip label class="mt-4">Rank #{{ coin.marketCapRank }}</v-chip>
                 </div>
               </v-col>
@@ -99,7 +99,7 @@
           responsive: true,
           maintainAspectRatio: false
         },
-         datacollection: null
+         datacollection: null,
       };
     },
     components: {
@@ -116,7 +116,6 @@
           `https://api.coingecko.com/api/v3/coins/${this.$route.params.coin_id}/market_chart?vs_currency=usd&days=1`
         )
         .then((res) => res.data);
-      console.log(payloadTickerData);
 
       this.tickerData = payloadTickerData.prices
       this.coin = {
@@ -290,7 +289,5 @@
 </script>
 
 <style>
-  .small-container {
-    max-width: 900px;
-  }
+  
 </style>
