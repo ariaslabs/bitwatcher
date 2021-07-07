@@ -1,19 +1,5 @@
 <template>
   <div>
-    <v-toolbar flat>
-      <v-btn small class="mr-2">
-        <v-icon left>
-          mdi-star-outline
-        </v-icon>
-        Watch List
-      </v-btn>
-      <v-btn small>
-        <v-icon left>
-          mdi-chart-arc
-        </v-icon>
-        Portfolio
-      </v-btn>
-    </v-toolbar>
     <v-data-table :headers="headers" :items="coins" :loading="loader" :items-per-page="itemsPerPage" @click:row="listItemActions" hide-default-footer loading-text="Loading..." class="elevation-0">
       <template v-slot:item.watchlist="{ item }">
         <v-simple-checkbox
@@ -42,17 +28,6 @@
       }
     },
     methods: {
-      cryptoExist(item) {
-        // if (!this.user.loggedIn) {
-        //   return false
-        // }
-        // for (const coin of this.user.watchlist) {
-        //   if (item.id === coin.id) {
-        //     return true
-        //   }
-        // }
-        // return false
-      },
       handleWatchlistAction(item) {
         console.log('In the func')
         if(!this.user.loggedIn) {

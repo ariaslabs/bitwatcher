@@ -6,6 +6,7 @@ import Login from '../views/Login.vue'
 import SignUp from '../views/SignUp.vue'
 import Exchanges from '../views/Exchanges.vue'
 import Watchlist from '../views/Watchlist.vue'
+import Account from '../views/Account.vue'
 
 Vue.use(VueRouter)
 
@@ -47,6 +48,11 @@ const routes = [
     path: '/watchlist',
     name: 'Watchlist',
     component: Watchlist
+  },
+  {
+    path: '/account',
+    name: 'Account',
+    component: Account
   },
   {
     path: "*",

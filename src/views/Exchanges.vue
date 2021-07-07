@@ -1,22 +1,10 @@
 <template>
   <v-container class="small-container mt-3">
+    <div class=" pa-5 pt-6">
+      <span class="text-h5">Exchanges</span><br>
+    </div>
+    <QuickSelectToolbar />
     <v-data-table :headers="headers" hide-default-footer :items="exhangeData" :page.sync="currentPage" :total-visible="7" :loading="loader" :items-per-page="itemsPerPage">
-      <template v-slot:top>
-        <v-toolbar
-        flat
-        >
-          <v-toolbar-title>Exchanges</v-toolbar-title>
-          <v-spacer></v-spacer>
-          <v-spacer></v-spacer>
-          <v-select
-          max-width="20"
-          class="float-right page-select"
-          label="Number of Items"
-          v-model="itemsPerPage"
-          :items="[25, 50, 100]"
-          ></v-select>
-        </v-toolbar>
-      </template>
       <template v-slot:item.name="{ item }">
         <div class="d-flex align-center " @click="listItemActions(item)" >
           <v-img max-height="30" max-width="30" class="float-left mr-2 mr-sm-4" :src="item.image"></v-img>
@@ -32,6 +20,8 @@
 
 <script>
   import axios from 'axios'
+  import QuickSelectToolbar from '../components/QuickSelectToolbar.vue'
+
   export default {
     data: () => {
       return {
@@ -58,6 +48,9 @@
           }
         ]
       }
+    },
+    components: {
+      QuickSelectToolbar
     },
     async created() {
       const exchangeRes = await axios.get(`https://api.coingecko.com/api/v3/exchanges?per_page=${this.itemsPerPage}&page=${this.currentPage}`).then(res => res);

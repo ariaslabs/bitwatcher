@@ -44,11 +44,11 @@ export default {
         },
         {
           name: 'Portfolio',
-          url: '/'
+          url: '/portfolio'
         },
         {
           name: 'Watchlist',
-          url: '/'
+          url: '/watchlist'
         },
       ]
     }

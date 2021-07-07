@@ -7,6 +7,7 @@
       </div>
       <v-row class="mb-10">
         <v-col cols="12">
+          <QuickSelectToolbar />
           <CryptoList :headers="coinsHeaders" :coins="listedCoins" :listItemActions="coinItemAction" :loader="loader" :itemsPerPage="itemsPerPage" tableTitle="Top 100 Coins by Marketcap" />
           <div class="text-center mt-3">
             <v-pagination :value="currentPage" :length="maxPages" total-visible="11" circle @input="nextPage"></v-pagination>
@@ -24,13 +25,12 @@
     numberWithCommas,
     addDecimal
   } from '../functions/numberTools'
-  import {
-    controllers
-  } from 'chart.js'
+  import QuickSelectToolbar from '../components/QuickSelectToolbar.vue'
   export default {
     name: 'Home',
     components: {
-      CryptoList
+      CryptoList,
+      QuickSelectToolbar
     },
     data: () => {
       return {

@@ -1,5 +1,9 @@
 <template>
   <v-container class="small-container">
+    <div class=" pa-5 pt-6">
+      <span class="text-h5">{{user.firstName}} {{user.lastName}}'s Watchlist</span><br>
+    </div>
+    <QuickSelectToolbar />
     <CryptoList :headers="coinsHeaders" :coins="watchlistFormated" :listItemActions="coinItemAction" :loader="loader" :itemsPerPage="itemsPerPage" tableTitle="Watchlist" />
   </v-container>
 </template>
@@ -7,6 +11,7 @@
 <script>
   import axios from 'axios'
   import CryptoList from '../components/CryptoList.vue'
+  import QuickSelectToolbar from '../components/QuickSelectToolbar.vue'
   export default {
     data: () => {
       return {
@@ -60,26 +65,29 @@
       }
     },
     components: {
-      CryptoList
+      CryptoList,
+      QuickSelectToolbar
     },
     async created() {
-      let watchlistPayload = []
-      console.log(this.user.watchlist)
-      for (const coinID of this.user.watchlist) {
+
+      let watchlistPayload = [];
+
+      for(const coinID of this.user.watchlist) {
         const coinData = await axios.get(`https://api.coingecko.com/api/v3/coins/${coinID}?tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`)
           .then(res => res.data)
         watchlistPayload.push({
-          id: await coinID,
-          name: await coinData.name,
-          image: await coinData.image.small,
-          market_cap_rank: await coinData.market_cap_rank,
-          current_price: await coinData.current_price['usd'],
-          high_24h: await coinData.high_24h['usd'],
-          low_24h: await coinData.low_24h['usd'],
-          market_cap: await coinData.market_cap['usd'],
+          id: coinData.id,
+          name: coinData.name,
+          image: coinData.image.small,
+          market_cap_rank: coinData.market_cap_rank,
+          current_price: coinData.market_data.current_price['usd'],
+          high_24h: coinData.market_data.high_24h['usd'],
+          low_24h: coinData.market_data.low_24h['usd'],
+          market_cap: coinData.market_data.market_cap['usd'],
         })
       }
-      console.log(watchlistPayload)
+
+      this.watchlistFormated = watchlistPayload
       this.loader = false
     },
     computed: {

@@ -10,8 +10,12 @@
                   <v-img max-height="50" max-width="50" class="float-left" :src="coin.image.large"></v-img>
                   <h2 class="ml-4 d-none d-sm-block">{{ coin.name }}</h2>
                 </div>
-                <div class="d-flex justify-end mt-n14 mt-sm-0 justify-sm-start" v-if="coin.marketCapRank !== null">
-                  <v-chip label class="mt-4">Rank #{{ coin.marketCapRank }}</v-chip>
+                <div class="d-flex align-center justify-end mt-n11 mt-sm-4 justify-sm-start" v-if="coin.marketCapRank !== null">
+                  <v-chip label class="mr-4">Rank #{{ coin.marketCapRank }}</v-chip>
+                  <v-btn large icon @click="handleWatchlistAction(coin)">
+                    <v-icon v-if="checkWatchlist(coin)">mdi-star</v-icon>
+                    <v-icon v-else>mdi-star-outline</v-icon>
+                  </v-btn>
                 </div>
               </v-col>
               <v-col class="" cols="12" sm="6">
@@ -63,7 +67,7 @@
         <v-card>
           <v-card-title>{{coin.name}} Statistics</v-card-title>
           <v-card-text class="mt-n4">
-            <div v-for="(item, index) in marketData" :key="item">
+            <div v-for="(item, index) in marketData" :key="item.title">
               <v-subheader v-if="item.header" :key="item.header" class="mt-5 px-0">{{item.header}}</v-subheader>
               <v-divider v-else-if="item.divider" :key="index"></v-divider>
               <div v-else class="d-flex my-3 justify-space-between">
@@ -284,6 +288,43 @@
           this.textShade = 'text--darken-2'
         return price
       },
+      handleWatchlistAction(item) {
+        if(!this.user.loggedIn) {
+          this.$router.push('/login');
+        }
+
+        for(const coinID of this.user.watchlist) {
+          if(item.id === coinID) {
+            console.log(coinID)
+            //remove item
+            console.log('Remove Item')//REMOVE_FROM_WATCHLIST
+            this.$store.dispatch('removeFromWatchlist', item)
+            return
+          }
+        }
+
+        //addItem
+        console.log("add Item")
+        this.$store.dispatch('addToWatchlist', item)
+        return
+      },
+      checkWatchlist(item) {
+        console.log('Checking list')
+        if(!this.user.loggedIn) {
+          return false
+        }
+
+        for(const coinID of this.user.watchlist) {
+          console.log(item.id === coinID)
+          if(item.id === coinID) return true
+        }
+        return false
+      }
+    },
+    computed: {
+      user() {
+        return this.$store.state.user
+      }
     }
   };
 </script>
