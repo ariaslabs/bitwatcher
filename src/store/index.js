@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import firebase from 'firebase'
-const FieldValue = firebase.firestore.FieldValue;
 
 Vue.use(Vuex)
 
@@ -28,6 +27,14 @@ export default new Vuex.Store({
        * }
        */
       loggedIn: false,
+      notifications: [] //
+      /**
+       * {
+       * id: 
+       * type: "Error"
+       * message: "User Exists"
+       * }
+       */
     }
   },
   mutations: {
@@ -54,26 +61,26 @@ export default new Vuex.Store({
       }
     },
     ADD_TO_WATCHLIST(state, payload) {
-      state.user.watchlist = state.user.watchlist.push(payload);
+      state.user.watchlist.push(payload);
     },
     REMOVE_FROM_WATCHLIST(state, payload) {
       state.user.watchlist = state.user.watchlist.filter(itemID => itemID !== payload)
     }
   },
   actions: {
-    async fetchUser({ commit, state }, payload) {
-      //console.log(payload)
-      //checks if an existing user profile is set
+    async fetchUser({
+      commit,
+      state
+    }, payload) {
 
-      if(state.user.email !== payload.email) {
+      if (state.user.email !== payload.email) { //checks if an existing user profile is set
         const usersRef = firebase.firestore().collection('users');
-        const userDoc =  usersRef.doc(payload.uid)
+        const userDoc = usersRef.doc(payload.uid)
         const userData = await userDoc.get().then(doc => doc.data())
-        console.log(userData)
 
         let userPayload = {
-          uid:  payload.uid,
-          email:  payload.email,
+          uid: payload.uid,
+          email: payload.email,
           firstName: userData.firstName,
           lastName: userData.lastName,
           portfolio: userData.portfolio,
@@ -84,33 +91,42 @@ export default new Vuex.Store({
       }
       return
     },
-    removeUser({ commit }) {
+    removeUser({
+      commit
+    }) {
       commit("REMOVE_USER");
     },
-    async addToWatchlist({ commit, state }, payload) {
-      let updatedWatchlist = state.user.watchlist ? state.user.watchlist : []
+    async addToWatchlist({
+      commit,
+      state
+    }, payload) {
+
+      let updatedWatchlist = state.user.watchlist
       updatedWatchlist.push(payload.id)
-      console.log(updatedWatchlist)
 
       const userDoc = firebase.firestore().collection('users').doc(state.user.uid)
+
+
       await userDoc.update({
-        watchlist: updatedWatchlist
-      })
-      .then(() => commit("ADD_TO_WATCHLIST", payload.id))
-      .catch((err) => console.error(err));
+          watchlist: updatedWatchlist
+        })
+        .then(() => commit("ADD_TO_WATCHLIST", payload.id))
+        .catch((err) => console.error(err));
       return
     },
-    async removeFromWatchlist({ commit, state }, payload) {
+    async removeFromWatchlist({
+      commit,
+      state
+    }, payload) {
       let updatedWatchlist = state.user.watchlist ? state.user.watchlist : []
-      console.log(updatedWatchlist)
       const removeIndex = updatedWatchlist.indexOf(payload.id)
       updatedWatchlist.splice(removeIndex, 1);
       const userDoc = firebase.firestore().collection('users').doc(state.user.uid)
       await userDoc.update({
-        watchlist: state.user.watchlist.filter(itemID => itemID !== payload.id)
-      })
-      .then(() => commit("REMOVE_FROM_WATCHLIST", payload.id))
-      .catch((err) => console.error(err));
+          watchlist: state.user.watchlist.filter(itemID => itemID !== payload.id)
+        })
+        .then(() => commit("REMOVE_FROM_WATCHLIST", payload.id))
+        .catch((err) => console.error(err));
       return
     }
   }
