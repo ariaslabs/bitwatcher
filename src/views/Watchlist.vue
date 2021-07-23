@@ -72,7 +72,13 @@
 
       let watchlistPayload = [];
 
-      for(const coinID of this.user.watchlist) {
+      watchlistPush: for(const coinID of this.user.watchlist) {
+       
+        //fixes any duplications in watchlist
+        for(const coin of watchlistPayload) {
+          if(coinID === coin.id) continue watchlistPush
+        }
+
         const coinData = await axios.get(`https://api.coingecko.com/api/v3/coins/${coinID}?tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`)
           .then(res => res.data)
         watchlistPayload.push({

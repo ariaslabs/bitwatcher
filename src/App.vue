@@ -3,6 +3,9 @@
     <Navbar />
     <v-main>
       <router-view/>
+      <div class="alert-container">
+        <Alert class="alerts" static right bottom v-for="item of alerts" :key="item.id" :alertMessage="item.message" :alertType="item.type" :alertIcon="item.icon" :alertID="item.id" />
+      </div>
     </v-main>
     <Footer />
   </v-app>
@@ -11,6 +14,7 @@
 <script>
 import Navbar from './components/Navbar.vue'
 import Footer from './components/Footer.vue'
+import Alert from './components/Alert.vue'
 
 export default {
   name: 'App',
@@ -20,7 +24,13 @@ export default {
   }),
   components: {
     Navbar,
-    Footer
+    Footer,
+    Alert
+  },
+  computed: {
+    alerts() {
+      return this.$store.state.alerts
+    }
   }
 };
 </script>
@@ -36,5 +46,12 @@ export default {
 
   .small-container {
     max-width: 1000px;
+  }
+
+  .alert-container {
+    position: fixed;
+    right: 10px;
+    bottom: 10px;
+    z-index: 1;
   }
 </style>

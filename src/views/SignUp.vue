@@ -50,6 +50,7 @@
 
 <script>
 import firebase from 'firebase'
+import {nanoid} from 'nanoid'
 
 export default {
   data: () => {
@@ -109,10 +110,14 @@ export default {
               watchlist: []
             })
           } catch(err) {
-            console.log(err);
-            this.alert.message = err.message
-            this.alert.type = 'error'
-            this.alert.show = true
+            const errorMessage = {
+              id: nanoid(),
+              type: 'error',
+              icon: "alert-box",
+              message: err.message
+            }
+
+            this.$store.dispatch('addAlert', errorMessage)
           }
 
           this.loader = false;
@@ -121,12 +126,14 @@ export default {
         })
         .catch(err => {
           if(err) {
-            console.log(err);
-            this.alert.message = err.message
-            this.alert.type = 'error'
-            this.alert.show = true
+            const errorMessage = {
+              id: nanoid(),
+              type: 'error',
+              icon: "alert-box",
+              message: err.message
+            }
 
-            this.loader = false;
+            this.$store.dispatch('addAlert', errorMessage)
             this.disable = false; 
           }
         })

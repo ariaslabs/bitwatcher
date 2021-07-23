@@ -21,6 +21,8 @@
 </template>
 
 <script>
+  import { nanoid } from 'nanoid'
+
   export default {
     data: () => {
       return {
@@ -29,23 +31,24 @@
     },
     methods: {
       handleWatchlistAction(item) {
-        console.log('In the func')
         if(!this.user.loggedIn) {
           this.$router.push('/login');
+          const errorMessage = {
+            id: nanoid(),
+            type: 'error',
+            icon: 'login',
+            message: 'Please login.'
+          }
+          
+          this.$store.dispatch('addAlert', errorMessage)
         }
 
         for(const coinID of this.user.watchlist) {
           if(item.id === coinID) {
-            console.log(coinID)
-            //remove item
-            console.log('Remove Item')//REMOVE_FROM_WATCHLIST
             this.$store.dispatch('removeFromWatchlist', item)
             return
           }
         }
-
-        //addItem
-        console.log("add Item")
         this.$store.dispatch('addToWatchlist', item)
       },
       checkWatchlist(item) {
@@ -69,7 +72,6 @@
     ],
     computed: {
       user() {
-        console.log(this.$store.state.user)
         return this.$store.state.user
       }
     }

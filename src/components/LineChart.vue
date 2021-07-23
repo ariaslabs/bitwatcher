@@ -26,8 +26,6 @@ export default {
     }
   },
   async mounted() {
-    console.log(this.coinData)
-
     const xLabels = this.coinData.map(item => {
       return moment(item[0]).format("HH:mm MMM DD, YYYY")
     })

@@ -91,6 +91,7 @@
 
 <script>
 import firebase from 'firebase'
+import { nanoid } from 'nanoid'
 
 export default {
   data: () => {
@@ -108,11 +109,11 @@ export default {
           url: '/exchanges',
           icon: 'transfer'
         },
-        {
-          name: 'Portfolio',
-          url: '/portfolio',
-          icon: 'wallet'
-        },
+        // {
+        //   name: 'Portfolio',
+        //   url: '/portfolio',
+        //   icon: 'wallet'
+        // },
         {
           name: 'Watchlist',
           url: '/watchlist',
@@ -122,9 +123,18 @@ export default {
     }
   },
   methods: {
-    logout() {
-      firebase.auth().signOut();
+    async logout() {
+      firebase.auth().signOut()
       this.$router.go('/')
+
+      const logoutMessage = {
+        id: nanoid(),
+        type: 'info',
+        icon: 'logout',
+        message: 'Successfully logged Out.'
+      }
+      
+      this.$store.dispatch('addAlert', logoutMessage)
     }
   },
   computed: {

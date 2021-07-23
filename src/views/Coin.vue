@@ -63,6 +63,9 @@
         </v-card>
       </v-col>
       <v-col cols="12">
+        <CoinCalculator :coin="coin" />
+      </v-col>
+      <v-col cols="12">
         <!-- Coin Statistics -->
         <v-card>
           <v-card-title>{{coin.name}} Statistics</v-card-title>
@@ -89,6 +92,8 @@
     addDecimal
   } from "../functions/numberTools";
   import LineChart from '../components/LineChart.vue'
+  import CoinCalculator from '../components/CoinCalculator.vue'
+  import { nanoid } from 'nanoid'
 
   export default {
     data: () => {
@@ -107,7 +112,8 @@
       };
     },
     components: {
-      LineChart
+      LineChart,
+      CoinCalculator
     },
     async created() {
       const data = await axios
@@ -290,32 +296,36 @@
       },
       handleWatchlistAction(item) {
         if(!this.user.loggedIn) {
+          const errorMessage = {
+            id: nanoid(),
+            type: 'error',
+            icon: 'login',
+            message: 'Please login.'
+          }
+          
+          this.$store.dispatch('addAlert', errorMessage)
           this.$router.push('/login');
+          
         }
 
         for(const coinID of this.user.watchlist) {
           if(item.id === coinID) {
-            console.log(coinID)
             //remove item
-            console.log('Remove Item')//REMOVE_FROM_WATCHLIST
             this.$store.dispatch('removeFromWatchlist', item)
             return
           }
         }
 
         //addItem
-        console.log("add Item")
         this.$store.dispatch('addToWatchlist', item)
         return
       },
       checkWatchlist(item) {
-        console.log('Checking list')
         if(!this.user.loggedIn) {
           return false
         }
 
         for(const coinID of this.user.watchlist) {
-          console.log(item.id === coinID)
           if(item.id === coinID) return true
         }
         return false

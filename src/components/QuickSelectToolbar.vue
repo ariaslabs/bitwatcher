@@ -26,11 +26,11 @@ export default {
           icon: 'mdi-star',
           url: '/watchlist'
         },
-        {
-          title: 'Portfolio',
-          icon: 'mdi-chart-arc',
-          url: '/portfolio'
-        },
+        // {
+        //   title: 'Portfolio',
+        //   icon: 'mdi-chart-arc',
+        //   url: '/portfolio'
+        // },
         {
           title: 'Cryto',
           icon: 'mdi-circle-multiple',

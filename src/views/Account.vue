@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-container class="small-container">
-      <v-card>
+      <v-card max-width="600px" min-width="500px" class="mx-auto">
         <v-card-title>Account</v-card-title>
         <v-list two-line>
           <v-list-item>
@@ -45,7 +45,9 @@
           </v-list-item>
         </v-list>
         <v-card-actions>
-          <v-btn class="">
+          <v-btn class="" absolute right top
+          @click="editOverlay = true"
+          >
             <v-icon left>
               mdi-pencil
             </v-icon>
@@ -57,22 +59,44 @@
 
     <!-- Edit Overlay. -->
     <v-overlay :value="editOverlay" 
-    v-click-outside="editOverlay = false"
+    
     >
       <v-card light min-width="400px">
         <v-card-title>Edit Account</v-card-title>
         <v-card-text>
           <v-text-field
           label="First Name"
-          :value="user.firstName"
+          v-value="user.firstName"
+          v-model="newFirstName"
           placeholder="First Name"
           ></v-text-field>
           <v-text-field
           label="Last Name"
-          :value="user.lastName"
+          v-model="newLastName"
+          v-value="user.lastName"
           placeholder="Last Name"
           ></v-text-field>
         </v-card-text>
+        <v-card-actions>
+          <v-btn icon absolute top right
+          @click="editOverlay = false"
+          >
+            <v-icon>
+              mdi-close
+            </v-icon>
+          </v-btn>
+          <v-btn
+          color="primary"
+          @click="save(), editOverlay = false"
+          >
+            submit
+          </v-btn>
+          <v-btn
+          @click="editOverlay = false"
+          >
+            Cancel
+          </v-btn>
+        </v-card-actions>
       </v-card>
     </v-overlay>
   </div>
@@ -82,12 +106,17 @@
 export default {
   data: () => {
     return {
-      editOverlay: true,
+      editOverlay: false,
+      newFirstName: '',
+      newLastName: '',
     }
   },
-  created() {
-    if(!this.user.loggedIn) {
-      this.$router.push('/login');
+  methods: {
+    save() {
+      this.$store.dispatch('editUser', {
+        firstName: this.newFirstName,
+        lastName: this.newLastName
+      })
     }
   },
   computed: {

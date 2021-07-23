@@ -29,6 +29,7 @@
 
 <script>
 import firebase from 'firebase'
+import { nanoid } from 'nanoid'
 
 export default {
   data: () => {
@@ -52,7 +53,14 @@ export default {
         this.$router.push('/');
       })
       .catch(err => {
-        console.error(err);
+        const errorMessage = {
+          id: nanoid(),
+          type: 'error',
+          icon: "alert-box",
+          message: err.message
+        }
+
+        this.$store.dispatch('addAlert', errorMessage)
       })
     }
   }

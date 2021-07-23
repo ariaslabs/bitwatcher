@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import firebase from 'firebase'
+import {nanoid} from 'nanoid'
 
 Vue.use(Vuex)
 
@@ -11,31 +12,37 @@ export default new Vuex.Store({
       email: '',
       firstName: '',
       lastName: '',
-      portfolio: [],
       /**
        *  Layout for "portfolio"
        * {
        *  coinID: bitcoin,
-       *  amount: 0.00234
+       *  amount: 0.00234,
+       *  history: [
+       *    {
+       *      date: '',
+       *      amount: ''
+       *     }
+       *  ]
        * }
        */
-      watchlist: [],
+      portfolio: [],
       /**
        * Layout for "watchlist"
-       * {
-       *  coinID: bitcoin,
-       * }
+       *  [ bitcoin,]
        */
+      watchlist: [],
       loggedIn: false,
-      notifications: [] //
-      /**
-       * {
-       * id: 
-       * type: "Error"
-       * message: "User Exists"
-       * }
-       */
-    }
+      
+    },
+    alerts: [] 
+
+    // {
+    //   id: "12Dsde",
+    //   type: "error",
+    //   icon: "alert-box",
+    //   message: "This is a test"
+    // }
+    
   },
   mutations: {
     SET_USER(state, payload) {
@@ -60,12 +67,22 @@ export default new Vuex.Store({
         loggedIn: false,
       }
     },
+    EDIT_USER(state, payload){
+      state.user.firstName = payload.firstName
+      state.user.lastName = payload.lastName
+    },
     ADD_TO_WATCHLIST(state, payload) {
       state.user.watchlist.push(payload);
     },
     REMOVE_FROM_WATCHLIST(state, payload) {
       state.user.watchlist = state.user.watchlist.filter(itemID => itemID !== payload)
-    }
+    },
+    REMOVE_ALERT(state, payload) {
+      state.alerts = state.alerts.filter(item => item.id !== payload)
+    },
+    ADD_ALERT(state, payload) {
+      state.alerts.push(payload);
+    },
   },
   actions: {
     async fetchUser({
@@ -96,6 +113,21 @@ export default new Vuex.Store({
     }) {
       commit("REMOVE_USER");
     },
+    async editUser({commit, dispatch, state}, payload) {
+      const userDoc = firebase.firestore().collection('users').doc(state.user.uid)
+      await userDoc.update({
+        firstName: payload.firstName,
+        lastName: payload.lastName
+      })
+      .then(() => commit("EDIT_USER", payload))
+      .then(() => dispatch("addAlert", {
+        id: nanoid(),
+        type: 'info',
+        icon: 'success',
+        message: 'Updated Account.'
+      }))
+      .catch((err) => console.error(err));
+    },
     async addToWatchlist({
       commit,
       state
@@ -106,7 +138,6 @@ export default new Vuex.Store({
 
       const userDoc = firebase.firestore().collection('users').doc(state.user.uid)
 
-
       await userDoc.update({
           watchlist: updatedWatchlist
         })
@@ -114,10 +145,7 @@ export default new Vuex.Store({
         .catch((err) => console.error(err));
       return
     },
-    async removeFromWatchlist({
-      commit,
-      state
-    }, payload) {
+    async removeFromWatchlist({ commit, state }, payload) {
       let updatedWatchlist = state.user.watchlist ? state.user.watchlist : []
       const removeIndex = updatedWatchlist.indexOf(payload.id)
       updatedWatchlist.splice(removeIndex, 1);
@@ -128,6 +156,12 @@ export default new Vuex.Store({
         .then(() => commit("REMOVE_FROM_WATCHLIST", payload.id))
         .catch((err) => console.error(err));
       return
+    },
+    async removeAlert({commit}, payload) {
+      commit('REMOVE_ALERT', payload)
+    },
+    async addAlert({commit}, payload) {
+      commit('ADD_ALERT', payload)
     }
   }
 })

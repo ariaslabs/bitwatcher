@@ -42,10 +42,10 @@ export default {
           name: 'Exchanges',
           url: '/exchanges'
         },
-        {
-          name: 'Portfolio',
-          url: '/portfolio'
-        },
+        // {
+        //   name: 'Portfolio',
+        //   url: '/portfolio'
+        // },
         {
           name: 'Watchlist',
           url: '/watchlist'
