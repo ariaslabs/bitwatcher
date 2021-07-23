@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import store from '../store'
 import VueRouter from 'vue-router'
-import firebase from 'firebase'
 
 import { nanoid } from 'nanoid'
 

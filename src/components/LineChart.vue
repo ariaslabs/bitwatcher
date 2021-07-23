@@ -61,7 +61,9 @@ export default {
               {
                 ticks: {
                   padding: 0,
-                  callback: function(value, index, values) {
+                
+                  callback: function(value, _index, _values) { // eslint-disable-line no-unused-vars
+            
                         return '$' + numberWithCommas(addDecimal(value));
                     }
                 },

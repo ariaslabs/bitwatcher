@@ -4,7 +4,6 @@
       <v-btn small class="mr-2" 
       v-for="btn of btns" 
       :key="btn"
-      v-if="checkRoute(btn.url)"
       @click="$router.push(btn.url)"
       >
         <v-icon left>
@@ -17,10 +16,12 @@
 </template>
 
 <script>
+
+
 export default {
   data: () => {
     return {
-      btns: [ 
+      routes: [ 
         {
           title: 'Watchlist',
           icon: 'mdi-star',
@@ -41,8 +42,14 @@ export default {
           icon: 'mdi-transfer',
           url: '/exchanges'
         }
-      ]
+      ],
+      btns: []
     }
+  },
+  mounted() {
+    this.btns = this.routes.filter((item) => {
+      if(this.$route.path !== item.url) return true
+    })
   },
   methods: {
     checkRoute(url) {
