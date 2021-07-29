@@ -1,41 +1,39 @@
 <template>
-  <v-container>
+  <v-container class="small-container">
     <v-row>
-      <v-col cols="12" lg="8">
-        <v-card>
-          <v-card-title>{{ coin.name }} Chart</v-card-title>
-          <v-card-text>
-            <LineChart :data="tickerData" />
-          </v-card-text>
-        </v-card>
-      </v-col>
-      <v-col cols="12" lg="4">
-        <v-card>
-          <v-card-title class="mb-3 text-justify">
-            <v-img
-              max-height="50"
-              max-width="50"
-              :src="coin.image.large"
-            ></v-img>
-            <h3 class="mx-3">{{ coin.name }}</h3>
-            <v-spacer></v-spacer>
-            <v-chip label class="">Rank #{{ coin.marketCapRank }}</v-chip>
-          </v-card-title>
-          <v-card-text class="mt-n4">
+      <v-col cols="12">
+        <v-card class="mt-5 mx-auto">
+          <v-card-text class="">
             <v-row>
-              <v-col class="">
-                <div>
-                  <span
-                    >{{ coin.name }} Price ({{
-                      coin.symbol.toUpperCase()
-                    }})</span
-                  >
-                  <div>
-                    <h1 class="mt-2 mb-4">${{ coin.currentPrice }}</h1>
-                    <v-chip color="green" class="text-right mr-3">
-                      <span class="white--text">+24%</span>
-                    </v-chip>
-                    <span class="mr-3">{{ coin.priceChange24 }}</span>
+              <v-col cols="12" sm="6" class=" text-justify float-left">
+                <div class="d-flex align-center ">
+                  <v-img max-height="50" max-width="50" class="float-left" :src="coin.image.large"></v-img>
+                  <h2 class="ml-4 d-none d-sm-block">{{ coin.name }}</h2>
+                </div>
+                <div class="d-flex align-center justify-end mt-n11 mt-sm-4 justify-sm-start" v-if="coin.marketCapRank !== null">
+                  <v-chip label class="mr-4">Rank #{{ coin.marketCapRank }}</v-chip>
+                  <v-btn large icon @click="handleWatchlistAction(coin)">
+                    <v-icon v-if="checkWatchlist(coin)">mdi-star</v-icon>
+                    <v-icon v-else>mdi-star-outline</v-icon>
+                  </v-btn>
+                </div>
+              </v-col>
+              <v-col class="" cols="12" sm="6">
+                <div class="d-flex-row justify-start justify-sm-end text-sm-right">
+                  <div class="">
+                    <span>{{ coin.name }} Price ({{ coin.symbol }})</span>
+                  </div>
+                  <div class="d-flex-row">
+                    <div class="d-flex justify-sm-end align-center my-2">
+                      <v-chip :color="percentColor" class="order-2 order-sm-2">
+                        <span class="white--text">{{ percentChangeHandler(coin.priceChange24percent) }}%</span>
+                      </v-chip>
+                      <h1 class="order-sm-2 ordet-1 mr-2 ml-sm-2">${{ coin.currentPrice }}</h1>
+                    </div>
+                    <div class="d-flex align-center justify-sm-end mt-4">
+                      <v-chip small label class="mr-2 order-2">24h Change</v-chip>
+                      <span :class=" 'order-2 ' + textColor + ' ' +textShade" class="">${{ coin.priceChangeInCurrency }}</span>
+                    </div>
                   </div>
                 </div>
               </v-col>
@@ -43,27 +41,44 @@
             <v-row>
               <v-col>
                 <a class="subtitle-1 mr-2" :href="coin.website">{{
-                  coin.website
-                }}</a>
+                      coin.website
+                    }}</a>
               </v-col>
             </v-row>
           </v-card-text>
-          <v-card-actions>
-            <v-btn text color="black" disabled> Description </v-btn>
-            <v-spacer></v-spacer>
-            <v-btn icon @click="show = !show">
-              <v-icon>{{
-                show ? "mdi-chevron-up" : "mdi-chevron-down"
-              }}</v-icon>
-            </v-btn>
-          </v-card-actions>
-          <v-expand-transition>
-            <div v-show="show">
-              <v-card-text>
+          <v-expansion-panels flat>
+            <v-expansion-panel>
+              <v-expansion-panel-header>Description</v-expansion-panel-header>
+              <v-expansion-panel-content>
                 <div v-html="coin.description"></div>
-              </v-card-text>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
+        </v-card>
+      </v-col>
+      <v-col>
+        <v-card class="pa-2">
+          <!-- Chart -->
+          <line-chart :label="coin.name + ' 24h Price Chart'" :coinData="tickerData"></line-chart>
+        </v-card>
+      </v-col>
+      <v-col cols="12">
+        <CoinCalculator :coin="coin" />
+      </v-col>
+      <v-col cols="12">
+        <!-- Coin Statistics -->
+        <v-card>
+          <v-card-title>{{coin.name}} Statistics</v-card-title>
+          <v-card-text class="mt-n4">
+            <div v-for="(item, index) in marketData" :key="item.title">
+              <v-subheader v-if="item.header" :key="item.header" class="mt-5 px-0">{{item.header}}</v-subheader>
+              <v-divider v-else-if="item.divider" :key="index"></v-divider>
+              <div v-else class="d-flex my-3 justify-space-between">
+                <h4>{{item.title}}</h4>
+                <span>{{item.value}}</span>
+              </div>
             </div>
-          </v-expand-transition>
+          </v-card-text>
         </v-card>
       </v-col>
     </v-row>
@@ -71,55 +86,254 @@
 </template>
 
 <script>
-import axios from "axios";
-import LineChart from "../components/LineChart.vue";
-import { numberWithCommas, addDecimal } from "../functions/numberTools";
-
-export default {
-  data: () => {
-    return {
-      show: false,
-      tickerData: [],
-      coin: {},
-    };
-  },
-  components: {
-    LineChart,
-  },
-  async created() {
-    const data = await axios
-      .get(
-        `https://api.coingecko.com/api/v3/coins/${this.$route.params.coin_id}`
-      )
-      .then((res) => res.data);
-
-    const payloadTickerData = await axios
-      .get(
-        `https://api.coingecko.com/api/v3/coins/${this.$route.params.coin_id}/market_chart?vs_currency=usd&days=1`
-      )
-      .then((res) => res.data);
-
-      this.tickerData = payloadTickerData.prices.map((item) => item[1])
-
-    this.coin = {
-      id: data.id,
-      description: data.description["en"],
-      image: data.image,
-      website: data.links.homepage[0],
-      marketCapRank: data.market_cap_rank,
-      name: data.name,
-      symbol: data.symbol,
-      currentPrice: numberWithCommas(
-        addDecimal(data.market_data.current_price["usd"])
-      ),
-      priceChange24: numberWithCommas(
-        addDecimal(data.market_data.price_change_24h)
-      ),
-    };
-    console.log(data);
-  },
-};
+  import axios from "axios";
+  import {
+    numberWithCommas,
+    addDecimal
+  } from "../functions/numberTools";
+  import LineChart from '../components/LineChart.vue'
+  import CoinCalculator from '../components/CoinCalculator.vue'
+  import {
+    nanoid
+  } from 'nanoid'
+  export default {
+    data: () => {
+      return {
+        show: false,
+        tickerData: [],
+        coin: {},
+        percentColor: 'green',
+        textColor: 'green',
+        marketData: [],
+        chartOptions: {
+          responsive: true,
+          maintainAspectRatio: false
+        },
+        datacollection: null,
+      };
+    },
+    components: {
+      LineChart,
+      CoinCalculator
+    },
+    async created() {
+      const data = await axios
+        .get(
+          `https://api.coingecko.com/api/v3/coins/${this.$route.params.coin_id}`
+        )
+        .then((res) => res.data);
+      const payloadTickerData = await axios
+        .get(
+          `https://api.coingecko.com/api/v3/coins/${this.$route.params.coin_id}/market_chart?vs_currency=usd&days=1`
+        )
+        .then((res) => res.data);
+      this.tickerData = payloadTickerData.prices
+      this.coin = {
+        id: data.id,
+        description: data.description["en"],
+        image: data.image,
+        website: data.links.homepage[0],
+        marketCapRank: data.market_cap_rank,
+        name: data.name,
+        symbol: data.symbol.toUpperCase(),
+        currentPrice: numberWithCommas(addDecimal(data.market_data.current_price["usd"])),
+        priceChange24percent: numberWithCommas(
+          addDecimal(data.market_data.price_change_percentage_24h_in_currency["usd"])
+        ),
+        priceChangeInCurrency: numberWithCommas(addDecimal(data.market_data.price_change_24h_in_currency["usd"]))
+      };
+      this.marketData = [{
+          header: this.coin.name + " Price Today"
+        },
+        {
+          divider: true
+        },
+        {
+          title: this.coin.name + ' Price',
+          value: "$ " + this.coin.currentPrice
+        },
+        {
+          divider: true,
+          inset: true
+        },
+        {
+          title: 'Price Change',
+          value: "$ " + this.coin.priceChangeInCurrency
+        },
+        {
+          divider: true,
+          inset: true
+        },
+        {
+          title: "24h Low / 24h High",
+          value: "$ " + numberWithCommas(addDecimal(data.market_data.high_24h['usd'])) + " /  $ " + numberWithCommas(addDecimal(data.market_data.low_24h['usd']))
+        },
+        {
+          divider: true,
+          inset: true
+        },
+        {
+          title: 'Market Rank',
+          value: "#" + this.coin.marketCapRank
+        },
+        {
+          divider: true,
+          inset: true
+        },
+        {
+          header: this.coin.name + " Price History"
+        },
+        {
+          divider: true,
+          inset: true
+        },
+        {
+          title: '7d Change',
+          value: data.market_data.price_change_percentage_7d + "% / $ " + numberWithCommas(addDecimal(data.market_data.price_change_percentage_7d_in_currency["usd"]))
+        },
+        {
+          divider: true,
+          inset: true
+        },
+        {
+          title: '14d Change',
+          value: data.market_data.price_change_percentage_14d + "% / $ " + numberWithCommas(addDecimal(data.market_data.price_change_percentage_14d_in_currency["usd"]))
+        },
+        {
+          divider: true,
+          inset: true
+        },
+        {
+          title: '30d Change',
+          value: data.market_data.price_change_percentage_30d + "% / $ " + numberWithCommas(addDecimal(data.market_data.price_change_percentage_30d_in_currency["usd"]))
+        },
+        {
+          divider: true,
+          inset: true
+        },
+        {
+          title: '60d Change',
+          value: data.market_data.price_change_percentage_60d + "% / $ " + numberWithCommas(addDecimal(data.market_data.price_change_percentage_60d_in_currency["usd"]))
+        },
+        {
+          divider: true,
+          inset: true
+        },
+        {
+          title: '200d Change',
+          value: data.market_data.price_change_percentage_200d + "% / $ " + numberWithCommas(addDecimal(data.market_data.price_change_percentage_200d_in_currency["usd"]))
+        },
+        {
+          divider: true,
+          inset: true
+        },
+        {
+          title: '1y Change',
+          value: data.market_data.price_change_percentage_7d + "% / $ " + numberWithCommas(addDecimal(data.market_data.price_change_percentage_7d_in_currency["usd"]))
+        },
+        {
+          divider: true,
+          inset: true
+        },
+        {
+          title: 'All Time High',
+          value: data.market_data.ath_change_percentage["usd"] + "% / $ " + numberWithCommas(addDecimal(data.market_data.ath["usd"]))
+        },
+        {
+          divider: true,
+          inset: true
+        },
+        {
+          title: 'All Time Low',
+          value: data.market_data.atl_change_percentage["usd"] + "% / $ " + numberWithCommas(addDecimal(data.market_data.atl["usd"]))
+        },
+        {
+          divider: true,
+          inset: true
+        },
+        {
+          header: this.coin.name + " Supply"
+        },
+        {
+          divider: true,
+          inset: true
+        },
+        {
+          title: 'Circulating Supply',
+          value: numberWithCommas(data.market_data.circulating_supply)
+        },
+        {
+          divider: true,
+          inset: true
+        },
+        {
+          title: 'Total Supply',
+          value: numberWithCommas(data.market_data.circulating_supply)
+        },
+        {
+          divider: true,
+          inset: true
+        },
+        {
+          title: 'Max Supply',
+          value: data.market_data.max_supply !== null ? numberWithCommas(data.market_data.max_supply) : "No Data"
+        }
+      ]
+      this.fillData();
+    },
+    methods: {
+      percentChangeHandler(price) {
+        if (Math.sign(price) === 1) {
+          this.percentColor = "green darken-1"
+          this.textColor = "green--text"
+          this.textShade = 'text--darken-1'
+          return price
+        }
+        this.percentColor = "red darken-2"
+        this.textColor = "red--text",
+          this.textShade = 'text--darken-2'
+        return price
+      },
+      handleWatchlistAction(item) {
+        if (!this.user.loggedIn) {
+          const errorMessage = {
+            id: nanoid(),
+            type: 'error',
+            icon: 'login',
+            message: 'Please login.'
+          }
+          this.$store.dispatch('addAlert', errorMessage)
+          this.$router.push('/login');
+        }
+        for (const coinID of this.user.watchlist) {
+          if (item.id === coinID) {
+            //remove item
+            this.$store.dispatch('removeFromWatchlist', item)
+            return
+          }
+        }
+        //addItem
+        this.$store.dispatch('addToWatchlist', item)
+        return
+      },
+      checkWatchlist(item) {
+        if (!this.user.loggedIn) {
+          return false
+        }
+        for (const coinID of this.user.watchlist) {
+          if (item.id === coinID) return true
+        }
+        return false
+      }
+    },
+    computed: {
+      user() {
+        return this.$store.state.user
+      }
+    }
+  };
 </script>
 
 <style>
+
 </style>
