@@ -6,7 +6,7 @@
     <QuickSelectToolbar />
     <v-data-table :headers="headers" hide-default-footer :items="exhangeData" :page.sync="currentPage" :total-visible="7" :loading="loader" :items-per-page="itemsPerPage">
       <template v-slot:item.name="{ item }">
-        <div class="d-flex align-center " @click="listItemActions(item)" >
+        <div class="d-flex align-center " @click="toSite(item)" >
           <v-img max-height="30" max-width="30" class="float-left mr-2 mr-sm-4" :src="item.image"></v-img>
           {{item.name}}
         </div>
@@ -45,6 +45,7 @@
             text: 'Year Established',
             value: 'year_established',
             sortable: false,
+            align: 'center'
           }
         ]
       }
@@ -77,6 +78,11 @@
         this.maxExchanges = exchangeRes.headers.total
         this.maxPages = Math.ceil(this.maxExchanges / this.itemsPerPage)
         this.loader = false
+      }
+    },
+    methods: {
+      toSite(item) {
+        window.location = item.url;
       }
     }
   }

@@ -4,15 +4,12 @@
       <h2>404</h2>
       <span>Page Not Found.</span>
     </div>
-      
-
   </div>
 </template>
 
 <script>
-export default {
-
-}
+  export default {
+  }
 </script>
 
 <style>

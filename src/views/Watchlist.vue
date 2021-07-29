@@ -12,6 +12,10 @@
   import axios from 'axios'
   import CryptoList from '../components/CryptoList.vue'
   import QuickSelectToolbar from '../components/QuickSelectToolbar.vue'
+  import {
+    numberWithCommas,
+    addDecimal
+  } from '../functions/numberTools'
   export default {
     data: () => {
       return {
@@ -35,11 +39,13 @@
             text: 'Name',
             value: 'name',
             sortable: false,
+            align: 'center'
           },
           {
             text: 'Price',
             value: 'current_price',
             sortable: false,
+            align: 'center'
           },
           {
             text: '24%',
@@ -69,30 +75,26 @@
       QuickSelectToolbar
     },
     async created() {
-
       let watchlistPayload = [];
-
-      watchlistPush: for(const coinID of this.user.watchlist) {
-       
+      watchlistPush: for (const coinID of this.user.watchlist) {
         //fixes any duplications in watchlist
-        for(const coin of watchlistPayload) {
-          if(coinID === coin.id) continue watchlistPush
+        for (const coin of watchlistPayload) {
+          if (coinID === coin.id) continue watchlistPush
         }
-
         const coinData = await axios.get(`https://api.coingecko.com/api/v3/coins/${coinID}?tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`)
           .then(res => res.data)
         watchlistPayload.push({
           id: coinData.id,
           name: coinData.name,
           image: coinData.image.small,
+          price_change_percentage_24h: addDecimal(coinData.market_data.price_change_percentage_24h) + "%",
           market_cap_rank: coinData.market_cap_rank,
-          current_price: coinData.market_data.current_price['usd'],
-          high_24h: coinData.market_data.high_24h['usd'],
-          low_24h: coinData.market_data.low_24h['usd'],
-          market_cap: coinData.market_data.market_cap['usd'],
+          current_price: '$' + numberWithCommas(addDecimal(coinData.market_data.current_price['usd'])),
+          high_24h: '$' + numberWithCommas(addDecimal(coinData.market_data.high_24h['usd'])),
+          low_24h: '$' + numberWithCommas(addDecimal(coinData.market_data.low_24h['usd'])),
+          market_cap: '$' + numberWithCommas(addDecimal(coinData.market_data.market_cap['usd'])),
         })
       }
-
       this.watchlistFormated = watchlistPayload
       this.loader = false
     },

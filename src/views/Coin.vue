@@ -41,8 +41,8 @@
             <v-row>
               <v-col>
                 <a class="subtitle-1 mr-2" :href="coin.website">{{
-                    coin.website
-                  }}</a>
+                      coin.website
+                    }}</a>
               </v-col>
             </v-row>
           </v-card-text>
@@ -93,8 +93,9 @@
   } from "../functions/numberTools";
   import LineChart from '../components/LineChart.vue'
   import CoinCalculator from '../components/CoinCalculator.vue'
-  import { nanoid } from 'nanoid'
-
+  import {
+    nanoid
+  } from 'nanoid'
   export default {
     data: () => {
       return {
@@ -108,7 +109,7 @@
           responsive: true,
           maintainAspectRatio: false
         },
-         datacollection: null,
+        datacollection: null,
       };
     },
     components: {
@@ -126,7 +127,6 @@
           `https://api.coingecko.com/api/v3/coins/${this.$route.params.coin_id}/market_chart?vs_currency=usd&days=1`
         )
         .then((res) => res.data);
-
       this.tickerData = payloadTickerData.prices
       this.coin = {
         id: data.id,
@@ -295,38 +295,33 @@
         return price
       },
       handleWatchlistAction(item) {
-        if(!this.user.loggedIn) {
+        if (!this.user.loggedIn) {
           const errorMessage = {
             id: nanoid(),
             type: 'error',
             icon: 'login',
             message: 'Please login.'
           }
-          
           this.$store.dispatch('addAlert', errorMessage)
           this.$router.push('/login');
-          
         }
-
-        for(const coinID of this.user.watchlist) {
-          if(item.id === coinID) {
+        for (const coinID of this.user.watchlist) {
+          if (item.id === coinID) {
             //remove item
             this.$store.dispatch('removeFromWatchlist', item)
             return
           }
         }
-
         //addItem
         this.$store.dispatch('addToWatchlist', item)
         return
       },
       checkWatchlist(item) {
-        if(!this.user.loggedIn) {
+        if (!this.user.loggedIn) {
           return false
         }
-
-        for(const coinID of this.user.watchlist) {
-          if(item.id === coinID) return true
+        for (const coinID of this.user.watchlist) {
+          if (item.id === coinID) return true
         }
         return false
       }
@@ -340,5 +335,5 @@
 </script>
 
 <style>
-  
+
 </style>

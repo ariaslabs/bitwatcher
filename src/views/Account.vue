@@ -36,7 +36,6 @@
               <v-list-item-title>{{user.lastName}}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          
           <v-list-item>
             <v-list-item-content>
               <v-list-item-subtitle></v-list-item-subtitle>
@@ -45,9 +44,7 @@
           </v-list-item>
         </v-list>
         <v-card-actions>
-          <v-btn class="" absolute right top
-          @click="editOverlay = true"
-          >
+          <v-btn class="" absolute right top @click="editOverlay = true">
             <v-icon left>
               mdi-pencil
             </v-icon>
@@ -56,75 +53,65 @@
         </v-card-actions>
       </v-card>
     </v-container>
-
     <!-- Edit Overlay. -->
-    <v-overlay :value="editOverlay" 
-    
-    >
+    <v-overlay :value="editOverlay">
       <v-card light min-width="400px">
-        <v-card-title>Edit Account</v-card-title>
-        <v-card-text>
-          <v-text-field
-          label="First Name"
-          v-value="user.firstName"
-          v-model="newFirstName"
-          placeholder="First Name"
-          ></v-text-field>
-          <v-text-field
-          label="Last Name"
-          v-model="newLastName"
-          v-value="user.lastName"
-          placeholder="Last Name"
-          ></v-text-field>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn icon absolute top right
-          @click="editOverlay = false"
-          >
-            <v-icon>
-              mdi-close
-            </v-icon>
-          </v-btn>
-          <v-btn
-          color="primary"
-          @click="save(), editOverlay = false"
-          >
-            submit
-          </v-btn>
-          <v-btn
-          @click="editOverlay = false"
-          >
-            Cancel
-          </v-btn>
-        </v-card-actions>
+        <v-form
+        lazy-validation
+        ref="form"
+        v-model="valid"
+        >
+          <v-card-title>Edit Account</v-card-title>
+          <v-card-text>
+            <v-text-field label="First Name" :rules="required" v-model="newFirstName" :value="user.firstName" placeholder="First Name"></v-text-field>
+            <v-text-field label="Last Name" :rules="required" v-model="newLastName" :value="user.lastName" placeholder="Last Name"></v-text-field>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn icon absolute top right @click="editOverlay = false">
+              <v-icon>
+                mdi-close
+              </v-icon>
+            </v-btn>
+            <v-btn color="primary" @click="save(), editOverlay = false" :disabled="!valid">
+              submit
+            </v-btn>
+            <v-btn @click="editOverlay = false">
+              Cancel
+            </v-btn>
+          </v-card-actions>
+        </v-form>
       </v-card>
     </v-overlay>
   </div>
 </template>
 
 <script>
-export default {
-  data: () => {
-    return {
-      editOverlay: false,
-      newFirstName: '',
-      newLastName: '',
-    }
-  },
-  methods: {
-    save() {
-      this.$store.dispatch('editUser', {
-        firstName: this.newFirstName,
-        lastName: this.newLastName
-      })
-    }
-  },
-  computed: {
-    user() {
-      return this.$store.state.user
+  export default {
+    data: () => {
+      return {
+        valid: false,
+        editOverlay: false,
+        newFirstName: '',
+        newLastName: '',
+        required: [
+          v => !!v || "Input is required."
+        ]
+      }
+    },
+    methods: {
+      save() {
+        this.$store.dispatch('editUser', {
+          firstName: this.newFirstName,
+          lastName: this.newLastName
+        })
+      }
+    },
+    computed: {
+      user() {
+        return this.$store.state.user
+      }
     }
   }
-}
 </script>
 
 <style>

@@ -1,27 +1,16 @@
 <template>
   <v-footer padless>
-    <v-card 
-    flat
-    tile
-    class="flex py-3"
-    >
-    <v-divider></v-divider>
+    <v-card flat tile class="flex py-3">
+      <v-divider></v-divider>
       <v-container>
         <v-row>
           <v-col cols="12" class="text-center">
-            <v-btn 
-            v-for="link in links" 
-            :key="link.name"  
-            @click="$router.push(link.url)"
-            text
-            rounded
-            class="my-1"
-            >
+            <v-btn v-for="link in links" :key="link.name" @click="$router.push(link.url)" text rounded class="my-1">
               {{link.name}}
             </v-btn>
           </v-col>
           <v-col class="text-center py-4">
-            {{ new Date().getFullYear() }} — <strong>ARIASLABS</strong>
+            {{ new Date().getFullYear() }} — <strong class="hover" @click="toSite">ARIASLABS</strong>
           </v-col>
         </v-row>
       </v-container>
@@ -30,30 +19,34 @@
 </template>
 
 <script>
-export default {
-  data: () => {
-    return {
-      links: [
-        {
-          name: 'Crypto',
-          url: '/'
-        },
-        {
-          name: 'Exchanges',
-          url: '/exchanges'
-        },
-        // {
-        //   name: 'Portfolio',
-        //   url: '/portfolio'
-        // },
-        {
-          name: 'Watchlist',
-          url: '/watchlist'
-        },
-      ]
+  export default {
+    data: () => {
+      return {
+        links: [{
+            name: 'Crypto',
+            url: '/'
+          },
+          {
+            name: 'Exchanges',
+            url: '/exchanges'
+          },
+          // {
+          //   name: 'Portfolio',
+          //   url: '/portfolio'
+          // },
+          {
+            name: 'Watchlist',
+            url: '/watchlist'
+          },
+        ]
+      }
+    },
+    methods: {
+      toSite() {
+        window.location = "http://www.ariaslabs.com"
+      }
     }
   }
-}
 </script>
 
 <style>

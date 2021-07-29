@@ -2,8 +2,7 @@
   <div>
     <v-container class="small-container">
       <div class=" pa-5 pt-6">
-        <span class="text-h5">Top Cryptocurrency Prices by Market Cap</span><br>
-        <small>The global crypto market cap is </small>
+        <span class="text-h5">Top Cryptocurrency Prices by Market Cap</span>
       </div>
       <v-row class="mb-10">
         <v-col cols="12">
@@ -57,11 +56,13 @@
             text: 'Name',
             value: 'name',
             sortable: false,
+            align: 'center'
           },
           {
             text: 'Price',
             value: 'current_price',
             sortable: false,
+            align: 'center'
           },
           {
             text: '24%',
