@@ -1,34 +1,9 @@
-# bitwatcher
+# <img src="./src/assets/images/bitwatcher.png" alt="drawing" width="30"/> Bitwatcher 
 
-## Project setup
-```
-npm install
-```
+___
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+Bitwatcher is crypto currency data ui to display coin data and market data. 
 
-### Compiles and minifies for production
-```
-npm run build
-```
 
-### Run your unit tests
-```
-npm run test:unit
-```
-
-### Run your end-to-end tests
-```
-npm run test:e2e
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+__Test User:__ test@test.com
+__Test Password:__ CheckMyApp
